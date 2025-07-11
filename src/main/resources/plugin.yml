@@ -1,0 +1,41 @@
+name: TPA
+version: '${version}'
+main: code.smartapple.tpa.TPA
+api-version: '1.16'
+commands:
+  tpa:
+    aliases: [teleport]
+  tpa accept:
+    description: Приймає запит на телепортацію.
+    usage: /tpa accept
+  tpa deny:
+    description: Відхиляє запит на телепортацію.
+    usage: /tpa deny
+  tpa toggle:
+    description: Вмикає або вимикає систему TPA.
+    usage: /tpa toggle
+  tpa help:
+    description: Показує список команд TPA.
+    usage: /tpa help
+  tpa reload:
+    description: Перезавантажує файл конфігурації.
+    usage: /tpa reload
+permissions:
+  tpa.command.use:
+    description: Дозвіл на використання команди tpa.
+    default: true
+  tpa.command.accept:
+    description: Дозвіл на прийняття запиту TPA.
+    default: true
+  tpa.command.deny:
+    description: Дозвіл на відхилення запиту TPA.
+    default: true
+  tpa.command.toggle:
+    description: Дозвіл на включення або відключення запитів.
+    default: true
+  tpa.command.reload:
+    description: Дозвіл на перезавантаження конфігурації.
+    default: op
+  tpa.command.help:
+    description: Дозвіл на показ довідки
+    default: true
