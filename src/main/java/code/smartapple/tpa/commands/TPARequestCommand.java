@@ -1,7 +1,8 @@
 package code.smartapple.tpa.commands;
 
 import code.smartapple.tpa.utils.MessageUtils;
-import code.smartapple.tpa.events.TPAToggleManager;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,22 +38,13 @@ public class TPARequestCommand implements CommandExecutor {
             return true;
         }
 
-        //підкоманди
+        // Підкоманди
         switch (args[0].toLowerCase()) {
             case "accept":
                 handleAccept(sender);
                 break;
             case "deny":
                 handleDeny(sender);
-                break;
-            case "toggle":
-                handleToggle(sender);
-                break;
-            case "reload":
-                handleReload(sender);
-                break;
-            case "help":
-                handleHelp(sender);
                 break;
             default:
                 handleRequest(sender, args[0]);
@@ -68,21 +60,28 @@ public class TPARequestCommand implements CommandExecutor {
             return;
         }
 
-        Player player = (Player) sender;
-        Player target = Bukkit.getPlayerExact(targetName); // Пошук тільки за точним нікнеймом
+        Player requester = (Player) sender;
+        Player target = Bukkit.getPlayerExact(targetName);
+
         if (target == null) {
-            player.sendMessage(MessageUtils.get("messages.player-not-online").replace("%player%", targetName));
+            requester.sendMessage(MessageUtils.get("messages.player-not-online").replace("%player%", targetName));
             return;
         }
 
-        if (target.equals(player)) {
-            player.sendMessage(MessageUtils.get("messages.cannot-request-self"));
+        if (target.equals(requester)) {
+            requester.sendMessage(MessageUtils.get("messages.cannot-request-self"));
             return;
         }
 
-        teleportRequests.put(target, player);
-        player.sendMessage(MessageUtils.get("messages.request-sent").replace("%player%", target.getName()));
-        target.sendMessage(MessageUtils.get("messages.request-received").replace("%player%", player.getName()));
+        teleportRequests.put(target, requester);
+
+        // Повідомлення для заявника
+        requester.sendMessage(MessageUtils.get("messages.request-sent").replace("%player%", target.getName()));
+
+        // Просте повідомлення без кнопок
+        String baseMessage = MessageUtils.get("messages.request-received")
+                .replace("%player%", requester.getName());
+        target.sendMessage(baseMessage);
     }
 
     private void handleAccept(CommandSender sender) {
@@ -93,6 +92,7 @@ public class TPARequestCommand implements CommandExecutor {
 
         Player target = (Player) sender;
         Player requester = teleportRequests.get(target);
+
         if (requester == null) {
             target.sendMessage(MessageUtils.get("messages.no-request-to-accept"));
             return;
@@ -113,6 +113,7 @@ public class TPARequestCommand implements CommandExecutor {
 
         Player target = (Player) sender;
         Player requester = teleportRequests.get(target);
+
         if (requester == null) {
             target.sendMessage(MessageUtils.get("messages.no-request-to-accept"));
             return;
@@ -122,36 +123,5 @@ public class TPARequestCommand implements CommandExecutor {
 
         target.sendMessage(MessageUtils.get("messages.request-denied").replace("%player%", requester.getName()));
         requester.sendMessage(MessageUtils.get("messages.request-denied-to-requester").replace("%player%", target.getName()));
-    }
-
-    private void handleToggle(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageUtils.get("messages.no-permission"));
-            return;
-        }
-
-        Player player = (Player) sender;
-        boolean isEnabled = TPAToggleManager.togglePlayer(player);
-
-        if (isEnabled) {
-            player.sendMessage(MessageUtils.get("messages.toggle-enabled"));
-        } else {
-            player.sendMessage(MessageUtils.get("messages.toggle-disabled"));
-        }
-    }
-
-    private void handleReload(CommandSender sender) {
-        if (!sender.hasPermission("tpa.command.reload")) {
-            sender.sendMessage(MessageUtils.get("messages.no-permission"));
-            return;
-        }
-
-        plugin.reloadConfig();
-        MessageUtils.init(plugin);
-        sender.sendMessage(MessageUtils.get("messages.reload-success"));
-    }
-
-    private void handleHelp(CommandSender sender) {
-        MessageUtils.getFormattedList("messages.help-message", false).forEach(sender::sendMessage);
     }
 }

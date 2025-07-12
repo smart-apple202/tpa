@@ -26,7 +26,7 @@ public final class TPA extends JavaPlugin {
         registerCommand("tpa help", new TPAHelpCommand(this));
         registerCommand("tpa reload", new TPAReloadCommand(this));
 
-        getLogger().info("Плагін успішно увімкнений!");
+        getLogger().info("Плагін увімкнений!");
     }
 
     @Override
