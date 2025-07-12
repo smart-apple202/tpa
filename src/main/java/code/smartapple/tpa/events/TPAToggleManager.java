@@ -1,7 +1,6 @@
 package code.smartapple.tpa.events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashSet;
 import java.util.Set;

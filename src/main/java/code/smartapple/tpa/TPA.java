@@ -26,13 +26,12 @@ public final class TPA extends JavaPlugin {
         registerCommand("tpa help", new TPAHelpCommand(this));
         registerCommand("tpa reload", new TPAReloadCommand(this));
 
-        getLogger().info("[TPA] Плагін завантажується...");
-        getLogger().info("[TPA] успішно увімкнений!");
+        getLogger().info("Плагін успішно увімкнений!");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("TPA вимкнений!");
+        getLogger().info("Плагін вимкнений!");
     }
 
     private void registerCommand(String name, CommandExecutor executor) {
